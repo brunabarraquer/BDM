@@ -1,5 +1,3 @@
 .env
 /imdb_datasets
-imdb_tsv/name.basics.tsv
-imdb_tsv/title.akas.tsv
 /imdb_tsv
