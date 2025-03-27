@@ -1,5 +1,7 @@
 import os
 import requests
+import gzip
+import shutil
 
 # Base URL for IMDb datasets
 BASE_URL = 'https://datasets.imdbws.com/'
@@ -15,8 +17,12 @@ DATA_FILES = [
     'title.ratings.tsv.gz'
 ]
 
+from datetime import datetime
+current_date = datetime.today().strftime('%Y-%m-%d')
+
+
 # Directory to save the downloaded files
-DOWNLOAD_DIR = './imdb_datasets/'
+DOWNLOAD_DIR = f'./IMDB_datasets/'
 
 # Create the download directory if it doesn't exist
 os.makedirs(DOWNLOAD_DIR, exist_ok=True)
@@ -30,11 +36,21 @@ def download_file(url, dest_path):
             for chunk in response.iter_content(chunk_size=8192):
                 file.write(chunk)
         print(f"Downloaded: {dest_path}")
+        return dest_path
     except requests.exceptions.RequestException as e:
         print(f"Error downloading {url}: {e}")
+
+def unzip_file(url, dest_path):
+    try:
+        with gzip.open(url, 'rb') as f_in:
+            with open(dest_path, 'wb') as f_out:
+                shutil.copyfileobj(f_in, f_out)
+    except Exception as e:
+        print(f'Error unzip: {e}')
 
 # Download each dataset
 for file_name in DATA_FILES:
     file_url = BASE_URL + file_name
     file_path = os.path.join(DOWNLOAD_DIR, file_name)
-    download_file(file_url, file_path)
+    dest_path = download_file(file_url, file_path)
+    unzip_file(dest_path, os.path.join(DOWNLOAD_DIR, file_name.removesuffix('.gz')))
