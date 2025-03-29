@@ -1,3 +1,5 @@
 .env
-/imdb_datasets
-/imdb_tsv
+/IMDB_datasets
+/Delta_Lake
+/MovieLens_32M
+/__pycache__

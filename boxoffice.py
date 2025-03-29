@@ -1,28 +1,35 @@
 import json
 import os
 from boxoffice_api import BoxOffice
+from datetime import datetime
 
-box_office = BoxOffice(api_key="46f1c1bd")  # Initialize API
+def boxOffice_weekenly_ingestion():
 
-# Specify the date (YYYY-MM-DD format)
-date = "2024-03-25"  # Replace with the desired date
+    box_office = BoxOffice(api_key="46f1c1bd")  # Initialize API
 
-# Define the directory and file path
-save_directory = "./box_office"  # Replace with your actual directory
-file_path = os.path.join(save_directory, "box_office_data.json")
+    # Specify the date (YYYY-MM-DD format)
+    # date = datetime.today().strftime('%Y-%m-%d')  # Replace with the desired date
 
-try:
-    # Fetch daily box office data
-    daily_data = box_office.get_daily(date)
+    week = datetime.today().isocalendar()[1]
+    year = datetime.now().year
+    month = datetime.now().month
 
-    # Ensure the directory exists
-    os.makedirs(save_directory, exist_ok=True)
+    # Define the directory and file path
+    save_directory = "./BoxOffice"  # Replace with your actual directory
+    file_path = os.path.join(save_directory, "box_office_data.json")
+    # print(file_path)
+    try:
+        # Fetch daily box office data
+        daily_data = box_office.get_weekly(year=year, week=week-1)
 
-    # Save the data to a JSON file
-    with open(file_path, "w", encoding="utf-8") as file:
-        json.dump(daily_data, file, indent=4)
+        # Ensure the directory exists
+        os.makedirs(save_directory, exist_ok=True)
 
-    print(f"Box office data successfully saved to {file_path}")
+        # Save the data to a JSON file
+        with open(file_path, "w", encoding="utf-8") as file:
+            json.dump(daily_data, file, indent=4)
 
-except Exception as e:
-    print(f"Failed to fetch box office data: {e}")
+        print(f"Box office data successfully saved to {file_path}")
+
+    except Exception as e:
+        print(f"Failed to fetch box office data: {e}")

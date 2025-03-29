@@ -17,10 +17,6 @@ DATA_FILES = [
     'title.ratings.tsv.gz'
 ]
 
-from datetime import datetime
-current_date = datetime.today().strftime('%Y-%m-%d')
-
-
 # Directory to save the downloaded files
 DOWNLOAD_DIR = f'./IMDB_datasets/'
 
@@ -48,9 +44,15 @@ def unzip_file(url, dest_path):
     except Exception as e:
         print(f'Error unzip: {e}')
 
-# Download each dataset
-for file_name in DATA_FILES:
-    file_url = BASE_URL + file_name
-    file_path = os.path.join(DOWNLOAD_DIR, file_name)
-    dest_path = download_file(file_url, file_path)
-    unzip_file(dest_path, os.path.join(DOWNLOAD_DIR, file_name.removesuffix('.gz')))
+
+
+def imbd_ingestion():
+    # Download each dataset
+    for file_name in DATA_FILES:
+        file_url = BASE_URL + file_name
+        file_path = os.path.join(DOWNLOAD_DIR, file_name)
+        dest_path = download_file(file_url, file_path)
+        unzip_file(dest_path, os.path.join(DOWNLOAD_DIR, file_name.removesuffix('.gz')))
+
+if __name__ == "__main__":   
+    imbd_ingestion()
