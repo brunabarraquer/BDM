@@ -17,12 +17,6 @@ DATA_FILES = [
     'title.ratings.tsv.gz'
 ]
 
-# Directory to save the downloaded files
-DOWNLOAD_DIR = f'./IMDB_datasets/'
-
-# Create the download directory if it doesn't exist
-os.makedirs(DOWNLOAD_DIR, exist_ok=True)
-
 # Function to download a file
 def download_file(url, dest_path):
     try:
@@ -32,27 +26,29 @@ def download_file(url, dest_path):
             for chunk in response.iter_content(chunk_size=8192):
                 file.write(chunk)
         print(f"Downloaded: {dest_path}")
-        return dest_path
+        # return dest_path
     except requests.exceptions.RequestException as e:
         print(f"Error downloading {url}: {e}")
+        return
 
-def unzip_file(url, dest_path):
+def unzip_file(file_path, dest_path):
     try:
-        with gzip.open(url, 'rb') as f_in:
+        with gzip.open(file_path, 'rb') as f_in:
             with open(dest_path, 'wb') as f_out:
                 shutil.copyfileobj(f_in, f_out)
+        os.remove(file_path)
     except Exception as e:
         print(f'Error unzip: {e}')
+        return
 
 
 
-def imbd_ingestion():
+def imbd_ingestion(temporal_folder_path):
     # Download each dataset
     for file_name in DATA_FILES:
         file_url = BASE_URL + file_name
-        file_path = os.path.join(DOWNLOAD_DIR, file_name)
-        dest_path = download_file(file_url, file_path)
-        unzip_file(dest_path, os.path.join(DOWNLOAD_DIR, file_name.removesuffix('.gz')))
+        file_path = os.path.join(temporal_folder_path, file_name)
+        download_file(file_url, file_path)
+        unzip_file(file_path, os.path.join(temporal_folder_path, 'imbd_'+file_name.removesuffix('.gz')))
 
-if __name__ == "__main__":   
-    imbd_ingestion()
+    print('All data ingested in the Temporal Folder')

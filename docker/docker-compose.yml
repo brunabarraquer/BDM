@@ -1,0 +1,96 @@
+services:
+  spark-delta:
+    image: apache/spark-py:latest
+    container_name: spark-delta
+    ports:
+      - "4040:4040"  # Spark web UI
+    environment:
+      - SPARK_HOME=/opt/spark
+      - PYTHONPATH=/opt/spark/python:/opt/spark/python/lib/py4j-0.10.9.5-src.zip
+      - PYSPARK_PYTHON=/usr/local/bin/python
+      - PYSPARK_DRIVER_PYTHON=/usr/local/bin/python
+      - JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+    volumes:
+      - ./data:/opt/spark/data
+      - ./scripts:/opt/spark/scripts
+    command: tail -f /dev/null
+    
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    ports: 
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+        KAFKA_BROKER_ID: 1
+        KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+        KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+        KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  postgres:
+    image: postgres:13
+    container_name: postgres
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - postgres-db-volume:/var/lib/postgresql/data
+
+  airflow-webserver:
+    build: .
+    container_name: airflow-webserver
+    depends_on:
+      - postgres
+    environment:
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__WEBSERVER__SECRET_KEY: my_secret_key
+      AIRFLOW__WEBSERVER__RBAC: 'True'
+      AIRFLOW__CORE__DAGS_FOLDER: /opt/Project_1/dags  # Configure Airflow to look for DAGs in /opt/Project_1/dags
+    volumes:
+      - ../Project_1:/opt/Project_1  # Mount the entire Project_1 directory
+      - ./airflow-logs-volume:/opt/airflow/logs
+    ports:
+      - "8080:8080"
+    command: >
+      bash -c "
+        airflow db init &&
+        airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com &&
+        airflow webserver"
+    restart: always
+
+  airflow-scheduler:
+    build: .
+    container_name: airflow-scheduler
+    depends_on:
+      - airflow-webserver
+      - postgres
+    environment:
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__WEBSERVER__SECRET_KEY: my_secret_key  # Add this
+      AIRFLOW__CORE__DAGS_FOLDER: /opt/Project_1/dags  # Configure Airflow to look for DAGs in /opt/Project_1/dags
+    volumes:
+      - ../Project_1:/opt/Project_1  # Mount the entire Project_1 directory
+      - ./airflow-logs-volume:/opt/airflow/logs
+    command: scheduler
+    restart: always
+
+volumes:
+  postgres-db-volume:
