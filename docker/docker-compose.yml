@@ -38,6 +38,7 @@ services:
         KAFKA_BROKER_ID: 1
         KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
         KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+        KAFKA_LISTENER_SECURITY_PROTOCOL: PLAINTEXT
         KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     networks:
       - airflow-network
@@ -68,6 +69,7 @@ services:
     depends_on:
       - postgres
       - spark-delta
+      - kafka
     environment:
       AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
@@ -75,6 +77,7 @@ services:
       AIRFLOW__WEBSERVER__RBAC: 'True'
       AIRFLOW__CORE__DAGS_FOLDER: /opt/Project_1/dags
       AIRFLOW_CONN_SPARK_DEFAULT: 'spark://spark-delta:7077'
+      KAFKA_HOST: kafka:9092
       SPARK_HOME: /opt/airflow/spark
       PYTHONPATH: ${PYTHONPATH}:/opt/airflow/spark/python:/opt/airflow/spark/python/lib/py4j-0.10.9.5-src.zip
       JAVA_HOME: /usr/lib/jvm/default-java
@@ -99,12 +102,14 @@ services:
       - airflow-webserver
       - postgres
       - spark-delta
+      - kafka
     environment:
       AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
       AIRFLOW__WEBSERVER__SECRET_KEY: my_secret_key
       AIRFLOW__CORE__DAGS_FOLDER: /opt/Project_1/dags
       AIRFLOW_CONN_SPARK_DEFAULT: 'spark://spark-delta:7077'
+      KAFKA_HOST: kafka:9092
       SPARK_HOME: /opt/airflow/spark
       PYTHONPATH: ${PYTHONPATH}:/opt/airflow/spark/python:/opt/airflow/spark/python/lib/py4j-0.10.9.5-src.zip
       JAVA_HOME: /usr/lib/jvm/default-java

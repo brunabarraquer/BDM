@@ -5,6 +5,7 @@ from Python.Data_Management.Data_Ingestion.Batch_Ingestion.imbd_ingestion import
 from Python.Data_Management.Data_Ingestion.Batch_Ingestion.ml_20m_ingestion import ml_20m_dataset_ingestion
 from Python.Data_Management.Data_Ingestion.Batch_Ingestion.boxoffice_ingestion import boxOffice_daily_ingestion
 from Python.Data_Management.Landing_Zone.transfer_data_to_delta_lake import create_delta_tables
+from Python.Data_Management.Landing_Zone.create_folders import create_folders
 from airflow import DAG # type: ignore
 from airflow.operators.python import PythonOperator # type: ignore
 from datetime import datetime
@@ -16,6 +17,7 @@ temporal_folder_path = project_folder / 'Data Management' / 'Landing Zone' / 'Te
 persistent_folder_path = project_folder / 'Data Management' / 'Landing Zone' / 'Persistent Zone'
 
 def batch_ingestion(temporal_folder_path):
+    create_folders(project_folder) # In the case that the folders have not been created (UI.py has not executed first)
     imbd_ingestion(temporal_folder_path)
     ml_20m_dataset_ingestion(temporal_folder_path)
     boxOffice_daily_ingestion(temporal_folder_path)

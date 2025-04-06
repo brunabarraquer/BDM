@@ -36,19 +36,19 @@ def transfer_data_to_delta_lake(spark, temporal_folder_path, persistent_folder_p
 
                     df = spark.read.format('csv').option('header', True).load(file_path)
                     # df.show()
-                    df.write.format('delta').mode('overwrite').save(str(datasource_folder_path / filename.removesuffix('csv')))
+                    df.write.format('delta').mode('overwrite').save(str(datasource_folder_path / filename.removesuffix('.csv')))
                     
 
                 elif filename.endswith('.tsv'):
                     df = spark.read.format('csv').option('header', True).option('delimiter', '\t').load(file_path)
                     # # df.show()
-                    df.write.format('delta').mode('overwrite').save(str(datasource_folder_path / filename.removesuffix('tsv')))
+                    df.write.format('delta').mode('overwrite').save(str(datasource_folder_path / filename.removesuffix('.tsv')))
 
                 else:
                     df = spark.read.format("json").option("multiline", "true").load(file_path)
                     # df.show()
                     df = clean_column_names(df)
-                    df.write.format('delta').mode('overwrite').option('mergeSchema', True).save(str(datasource_folder_path / filename.removesuffix('json')))
+                    df.write.format('delta').mode('overwrite').option('mergeSchema', True).save(str(datasource_folder_path / filename.removesuffix('.json')))
                         
 
 
