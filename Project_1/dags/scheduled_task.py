@@ -23,13 +23,11 @@ def batch_ingestion(temporal_folder_path):
     boxOffice_daily_ingestion(temporal_folder_path)
     return
 
-
-
 # Create the DAG
 with DAG(
     dag_id='update_daily_data_dag',
-    start_date=datetime(2024, 1, 1, 23, 59, 59),
-    schedule_interval='@daily',
+    start_date=datetime(2024, 1, 1, 23, 30, 0),
+    schedule_interval='30 23 * * *',  # Run every day at 23:30:00
     catchup=False,
 ) as dag:
     

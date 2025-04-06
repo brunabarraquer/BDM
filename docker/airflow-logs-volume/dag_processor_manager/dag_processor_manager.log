@@ -1,0 +1,54 @@
+[2025-04-06T16:55:29.205+0000] {manager.py:469} INFO - Processing files using up to 2 processes at a time 
+[2025-04-06T16:55:29.206+0000] {manager.py:470} INFO - Process each file at most once every 30 seconds
+[2025-04-06T16:55:29.207+0000] {manager.py:471} INFO - Checking for new files in /opt/Project_1/dags every 300 seconds
+[2025-04-06T16:55:29.208+0000] {manager.py:738} INFO - Searching for files in /opt/Project_1/dags
+[2025-04-06T16:55:29.256+0000] {manager.py:741} INFO - There are 1 files in /opt/Project_1/dags
+[2025-04-06T16:55:29.372+0000] {manager.py:879} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-------------------------------------  -----  ---------  --------  ----------  --------------  ----------
+/opt/Project_1/dags/scheduled_task.py    167  0.05s             0           0
+================================================================================
+[2025-04-06T16:55:59.540+0000] {manager.py:879} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                              PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-------------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/Project_1/dags/scheduled_task.py                           1           0  2.15s           2025-04-06T16:55:31
+================================================================================
+[2025-04-06T16:56:29.785+0000] {manager.py:879} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                              PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-------------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/Project_1/dags/scheduled_task.py                           1           0  1.18s           2025-04-06T16:56:02
+================================================================================
+[2025-04-06T16:56:59.873+0000] {manager.py:879} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                              PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-------------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/Project_1/dags/scheduled_task.py                           1           0  0.90s           2025-04-06T16:56:33
+================================================================================
+[2025-04-06T16:57:29.933+0000] {manager.py:879} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                              PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-------------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/Project_1/dags/scheduled_task.py                           1           0  0.89s           2025-04-06T16:57:04
+================================================================================
+[2025-04-06T16:58:00.111+0000] {manager.py:879} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                              PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-------------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/Project_1/dags/scheduled_task.py                           1           0  1.02s           2025-04-06T16:57:35
+================================================================================
+[2025-04-06T16:58:26.498+0000] {manager.py:451} INFO - Exiting gracefully upon receiving signal 15
