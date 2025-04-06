@@ -1,7 +1,3 @@
 .env
-/IMDB_datasets
-/Delta_Lake
-/ml-32m
 /__pycache__
-/BoxOffice
 delta_lake.ipynb
