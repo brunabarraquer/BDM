@@ -30,7 +30,7 @@ def download_file(url, dest_path):
         # return dest_path
     except requests.exceptions.RequestException as e:
         print(f"Error downloading {url}: {e}")
-        return
+        return False
 
 
 # Function to unzip the files retrieved from API
@@ -42,7 +42,7 @@ def unzip_file(file_path, dest_path):
         os.remove(file_path)  # Remove zip file
     except Exception as e:
         print(f'Error unzip: {e}')
-        return
+        return False
 
 
 # Function to ingest the data in the Temporal folder with the prefix of API source
@@ -51,7 +51,11 @@ def imbd_ingestion(temporal_folder_path):
     for file_name in DATA_FILES:
         file_url = BASE_URL + file_name
         file_path = os.path.join(temporal_folder_path, file_name)
-        download_file(file_url, file_path)
-        unzip_file(file_path, os.path.join(temporal_folder_path, 'imbd_'+file_name.removesuffix('.gz')))
-
+        success_download = download_file(file_url, file_path)
+        if not success_download: 
+            return False
+        success_unzip = unzip_file(file_path, os.path.join(temporal_folder_path, 'imbd_'+file_name.removesuffix('.gz')))
+        if not success_unzip:
+            return False
     print('All data ingested in the Temporal Folder')
+    return True

@@ -10,7 +10,7 @@ def ml_20m_dataset_ingestion(temporal_folder_path):
         dataset_path = kagglehub.dataset_download("grouplens/movielens-20m-dataset")
     except Exception as e:
         print(f'Error occurred to ingest the data from kaggle API: {e}')
-        return
+        return False
 
     # Rename the data files to ensure the data convention
     for filename in os.listdir(dataset_path):
@@ -23,7 +23,7 @@ def ml_20m_dataset_ingestion(temporal_folder_path):
 
             except Exception as e:
                 print(f'Error occurred when renaming the files: {e}')
-                return
+                return False
 
     # Loop through all files in dataset_path
     for filename in os.listdir(dataset_path):
@@ -37,7 +37,7 @@ def ml_20m_dataset_ingestion(temporal_folder_path):
 
             except Exception as e:
                 print(f'Error occurred when move the data to Temporal folder: {e}')
-                return
+                return False
 
     try:
         # Remove the dataset path, since we already moved data to Temporal folder
@@ -45,5 +45,7 @@ def ml_20m_dataset_ingestion(temporal_folder_path):
         print(f"Deleted dataset folder: {dataset_path}")
     except Exception as e:
         print(f"Error removing dataset folder: {e}")
+        return False
 
     print('All the data ingested in the Temporal Folder')
+    return True

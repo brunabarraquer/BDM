@@ -3,12 +3,12 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../../../Python/Data_Management/Data_Ingestion/Streaming_Ingestion/Hot_path')))
 import unittest
 from unittest.mock import patch, MagicMock, call
-from  kafka_producer_hot_path import create_producer, start_streaming  # type: ignore
+from  kafka_producer_hot_path import create_producer, real_time_processing  # type: ignore
 
 
 class TestKafkaProducerHotPath(unittest.TestCase):
 
-    @patch('kafka_producer.KafkaProducer')
+    @patch('kafka_producer_hot_path.KafkaProducer')
     def test_create_producer(self, mock_kafka_producer):
         mock_instance = MagicMock()
         mock_kafka_producer.return_value = mock_instance
@@ -21,16 +21,16 @@ class TestKafkaProducerHotPath(unittest.TestCase):
         )
         self.assertEqual(producer, mock_instance)
 
-    @patch('kafka_producer.generate_review_bank')
-    @patch('kafka_producer.KafkaProducer')
-    @patch('kafka_producer.time.sleep', return_value=None)  # prevent real sleep
-    def test_start_streaming(self, mock_sleep, mock_kafka_producer, mock_generate_reviews):
+    @patch('kafka_producer_hot_path.generate_review_bank')
+    @patch('kafka_producer_hot_path.KafkaProducer')
+    @patch('kafka_producer_hot_path.time.sleep', return_value=None)  # prevent real sleep
+    def test_real_time_streaming(self, mock_sleep, mock_kafka_producer, mock_generate_reviews):
         # Setup mock return values
         mock_producer_instance = MagicMock()
         mock_kafka_producer.return_value = mock_producer_instance
         mock_generate_reviews.return_value = ['Great movie!', 'Bad plot', 'Loved it!']
 
-        start_streaming()
+        real_time_processing()
 
         # Verify producer is created
         mock_kafka_producer.assert_called_once()

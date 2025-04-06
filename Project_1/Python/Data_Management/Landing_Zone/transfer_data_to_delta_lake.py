@@ -22,6 +22,7 @@ def start_spark():
         return spark
     except Exception as e:
         print(f'Cannot start Spark due to configuration error: {e}')
+        return False
 
 
 # Function to transfer data from Temporal folder to Persisten folder (Delta Lake)
@@ -36,6 +37,7 @@ def transfer_data_to_delta_lake(spark, temporal_folder_path, persistent_folder_p
                 datasource_folder_path.mkdir(parents=True, exist_ok=True)
             except Exception as e:
                 print(f'Error occurred to creating the datasource folder: {e}')
+                return False
 
             file_path = os.path.join(temporal_folder_path, filename)
 
@@ -55,12 +57,22 @@ def transfer_data_to_delta_lake(spark, temporal_folder_path, persistent_folder_p
                 # df.show()
             except Exception as e:
                 print(f"Error reading {filename}: {e}")
+                return False
 
 
 # Function to create the delta tables for the data files
 def create_delta_tables(temporal_folder_path, persistent_folder_path):
-    spark = start_spark()
-    transfer_data_to_delta_lake(spark, temporal_folder_path, persistent_folder_path)
+    try:
+        spark = start_spark()
+        if not spark:
+            return False
+        successful_transfer = transfer_data_to_delta_lake(spark, temporal_folder_path, persistent_folder_path)
+        if not successful_transfer:
+            return False
+    except Exception as e:
+        print(f'Error to create delta tables: {e}')
+        return False
+    return True
 
 # from pathlib import Path
 # project_folder = Path(__file__).resolve().parents[3]

@@ -50,45 +50,46 @@ def button1_action():
         messagebox.showinfo("Execution in progress", "The monitor is already in progress.")
 
     write_to_terminal("Creating Data Management folders ... !!!\n")
-    try:
-        create_folders.create_folders(project_folder)
-    except Exception as e:
-        write_to_terminal(f"Creation of Data Management foldes failed: {e}\n")
+    successfull = create_folders.create_folders(project_folder)
+    if successfull:
+        write_to_terminal("Successfully created Data Management folders !!!\n")
+    else:
+        write_to_terminal(f"Creation of Data Management foldes failed.\n")
         return
-    write_to_terminal("Successfully created Data Management folders !!!\n")
-
+    
     write_to_terminal("Ingesting ml-20m dataset to Temporal folder ...\n")
-    try:
-        ml_20m_ingestion.ml_20m_dataset_ingestion(temporal_folder_path)
-    except Exception as e:
-        write_to_terminal(f"Failed to ingest ml-20 dataset to Temporal folder: {e}\n")
+    successfull = ml_20m_ingestion.ml_20m_dataset_ingestion(temporal_folder_path)
+    if successfull:
+        write_to_terminal("Successfully ingested ml-20m dataset to Temporal folder !!!\n")
+    else:
+        write_to_terminal(f"Failed to ingest ml-20 dataset to Temporal folder.\n")
         return
-    write_to_terminal("Successfully ingested ml-20m dataset to Temporal folder !!!\n")
 
     write_to_terminal("Ingesting IMBd dataset to Temporal folder ...\n")
-    try:
-        imbd_ingestion.imbd_ingestion(temporal_folder_path)
-    except Exception as e:
-        write_to_terminal(f"Failed to ingest IMBd dataset to Temporal folder: {e}\n")
+    successfull = imbd_ingestion.imbd_ingestion(temporal_folder_path)
+    
+    if successfull:
+        write_to_terminal("Successfully ingested IMBd dataset to Temporal folder !!!\n")
+    else: 
+        write_to_terminal(f"Failed to ingest IMBd dataset to Temporal folder.\n")
         return
-    write_to_terminal("Successfully ingested IMBd dataset to Temporal folder !!!\n")
-
+    
     write_to_terminal("Ingesting boxOffice dataset to Temporal folder ...\n")
-    try:
-        boxoffice_ingestion.boxOffice_daily_ingestion(temporal_folder_path)
-    except Exception as e:
-        write_to_terminal(f"Failed to ingest boxOffice dataset to Temporal folder: {e}\n")
+    successfull = boxoffice_ingestion.boxOffice_daily_ingestion(temporal_folder_path)
+    if successfull:
+        write_to_terminal("Successfully ingested boxOffice dataset to Temporal folder !!!\n")
+    else: 
+        write_to_terminal(f"Failed to ingest boxOffice dataset to Temporal folder.\n")
         return
-    write_to_terminal("Successfully ingested boxOffice dataset to Temporal folder !!!\n")
-
+    
     write_to_terminal("Transferring data to Persistent folder creating Delta Tables ...\n")
-    try:
-        transfer_data_to_delta_lake.create_delta_tables(temporal_folder_path, persistent_folder_path)
-    except Exception as e:
-        write_to_terminal(f"Failed to transfer data to Persistent folder and create Delta Table: {e}\n")
+    successfull = transfer_data_to_delta_lake.create_delta_tables(temporal_folder_path, persistent_folder_path)
+    if successfull:
+        write_to_terminal("Successfully transferred data to Persistent folder and created Delta Table !!!\n")
+    else:
+        write_to_terminal(f"Failed to transfer data to Persistent folder and create Delta Table.\n")
         return
-    write_to_terminal("Successfully transferred data to Persistent folder and created Delta Table !!!\n")
-
+    
 
 def doCheckCodeQuality(secondary_terminal):
     

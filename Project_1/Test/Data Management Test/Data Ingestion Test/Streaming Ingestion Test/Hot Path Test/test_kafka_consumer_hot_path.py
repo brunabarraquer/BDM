@@ -8,7 +8,7 @@ from kafka_consumer_hot_path import create_consumer, receive_messages  # type: i
 
 class TestKafkaConsumerHotPath(unittest.TestCase):
 
-    @patch('consumer.KafkaConsumer')
+    @patch('kafka_consumer_hot_path.KafkaConsumer')
     def test_create_consumer(self, mock_kafka_consumer):
         mock_instance = MagicMock()
         mock_kafka_consumer.return_value = mock_instance
@@ -23,7 +23,7 @@ class TestKafkaConsumerHotPath(unittest.TestCase):
         )
         self.assertEqual(consumer, mock_instance)
 
-    @patch('consumer.KafkaConsumer')
+    @patch('kafka_consumer_hot_path.KafkaConsumer')
     @patch('builtins.print')
     def test_receive_messages(self, mock_print, mock_kafka_consumer):
         # Mock KafkaConsumer instance and simulate incoming messages
@@ -34,11 +34,12 @@ class TestKafkaConsumerHotPath(unittest.TestCase):
         ]
         mock_kafka_consumer.return_value = mock_instance
 
+        # Call the function
         receive_messages()
 
-        # Check that print was called with the mock messages
-        mock_print.assert_any_call("Received: {'user': 'Alice', 'review': 'Great!'}")
-        mock_print.assert_any_call("Received: {'user': 'Bob', 'review': 'Not bad'}")
+        # Assert print was called with the correct formatted messages
+        mock_print.assert_any_call("\033[31mHot Path\033[0m -> message received: {'user': 'Alice', 'review': 'Great!'}\n")
+        mock_print.assert_any_call("\033[31mHot Path\033[0m -> message received: {'user': 'Bob', 'review': 'Not bad'}\n")
 
-        # Check consumer.close() was called
+        # Assert that consumer.close was called
         mock_instance.close.assert_called_once()

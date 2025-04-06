@@ -29,6 +29,7 @@ def boxOffice_daily_ingestion(temporal_folder_path):
 
     except Exception as e:
         print(f"Failed to fetch box office data: {e}")
-        return
+        return False
+    return True
 
 # boxOffice_daily_ingestion(temporal_folder_path)

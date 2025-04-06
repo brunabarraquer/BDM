@@ -14,8 +14,10 @@ def create_folders(project_path):
             folder.mkdir(parents=True, exist_ok=True)
         except Exception as e:
             print(f'error ocurred: {e}')
+            return False
 
     print('All folders created successfully !!!')
+    return True
 
 # project_folder = Path(__file__).resolve().parents[3]
 # create_folders(project_folder)

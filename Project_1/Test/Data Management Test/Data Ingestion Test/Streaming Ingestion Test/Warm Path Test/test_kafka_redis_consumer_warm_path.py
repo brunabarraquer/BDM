@@ -86,7 +86,7 @@ class TestKafkaRedisConsumerWarmPath(unittest.TestCase):
             mock_store.assert_any_call(message1.value, mock_redis)
             mock_store.assert_any_call(message2.value, mock_redis)
             mock_get_data.assert_called()
-            mock_print.assert_called_with("Warm Path -> get movies rellevance in a minute: {'mock': 'data'}\n")
+            mock_print.assert_called_with("\033[38;5;214mWarm Path\033[0m -> get movies rellevance in a minute: {'mock': 'data'}\n")
 
 # Run test suite
 if __name__ == '__main__':
