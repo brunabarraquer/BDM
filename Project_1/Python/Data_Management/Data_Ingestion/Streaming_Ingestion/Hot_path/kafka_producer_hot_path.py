@@ -9,6 +9,7 @@ sys.path.append(current_folder)
 from generate_reviews import generate_review_bank
 
 
+# Function to create a Kafka Producer
 def create_producer():
     producer = KafkaProducer(
         bootstrap_servers='localhost:9092',
@@ -17,9 +18,10 @@ def create_producer():
     return producer
 
 
+# Function to simulate a real time processing
 def real_time_processing():    
     producer = create_producer()
-
+    # Generate 1000 reviews randomly
     all_reviews = generate_review_bank(100)
     movies_id = ['movie1', 'movie2', 'movie3']
     topic = 'user-reviews-topic'
@@ -32,11 +34,10 @@ def real_time_processing():
             'review': random.choice(all_reviews),
             'rating': random.randint(1, 5)  # Ratings from 1 to 5
         }
-        
+
         producer.send(topic, review_data)
         # print(f"Sent: {review_data}")
         time.sleep(1)  # Send data every 1 second
-    
+
     producer.close()
     return
-

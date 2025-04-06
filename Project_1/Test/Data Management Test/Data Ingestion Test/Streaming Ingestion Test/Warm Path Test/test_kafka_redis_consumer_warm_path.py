@@ -1,13 +1,11 @@
 import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../../../Python/Data_Management/Data_Ingestion/Streaming_Ingestion/Warm_path')))
-
 import unittest
 from unittest.mock import patch, MagicMock
 import json
-import redis
-
 from kafka_redis_consumer_warm_path import create_consumer, create_redis, store_in_buffer, get_buffer_data, receive_messages_minutely # type: ignore
+
 
 class TestKafkaRedisConsumerWarmPath(unittest.TestCase):
 

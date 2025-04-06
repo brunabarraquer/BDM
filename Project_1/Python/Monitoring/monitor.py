@@ -4,6 +4,7 @@ import threading
 
 stop_monitoring = False
 
+
 def get_process_usage(process_name):
     for process in psutil.process_iter(['pid', 'name']):
         if process.info['name'] == process_name:
@@ -18,6 +19,7 @@ def get_process_usage(process_name):
             }
     return None
 
+
 def monitor_system():
     cpu_usage = psutil.cpu_percent(interval=1)
     memory = psutil.virtual_memory()
@@ -31,6 +33,7 @@ def monitor_system():
         'memory_total': memory_total,
         'disk_usage': disk_usage
     }
+
 
 def run_monitor(output_func, process_name=None, interval=1):
     global stop_monitoring
@@ -52,12 +55,14 @@ def run_monitor(output_func, process_name=None, interval=1):
         output_func("-" * 50)
         time.sleep(interval)
 
+
 def start_monitoring_thread(output_func, process_name=None, interval=1):
     global stop_monitoring
     stop_monitoring = False
     monitor_thread = threading.Thread(target=run_monitor, args=(output_func, process_name, interval))
     monitor_thread.start()
     return monitor_thread
+
 
 def stop_monitoring_thread():
     global stop_monitoring

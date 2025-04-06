@@ -4,9 +4,8 @@ from pathlib import Path
 import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../Python/Data_Management/Landing_Zone')))
-
-# Import the functions to test
 from transfer_data_to_delta_lake import clean_column_names, start_spark, transfer_data_to_delta_lake, create_delta_tables # type: ignore
+
 
 class TestCreateDeltaTables(unittest.TestCase):
     
@@ -32,7 +31,6 @@ class TestCreateDeltaTables(unittest.TestCase):
         
         # Verify result is as expected
         self.assertEqual(result, mock_df)
-    
 
     @patch("pyspark.sql.SparkSession.builder")
     @patch("transfer_data_to_delta_lake.configure_spark_with_delta_pip")
@@ -117,7 +115,6 @@ class TestCreateDeltaTables(unittest.TestCase):
         # Verify correct methods were called
         mock_start_spark.assert_called_once()
         mock_transfer.assert_called_once_with(mock_spark, self.temp_path, self.persist_path)
-
 
 if __name__ == "__main__":
     unittest.main()

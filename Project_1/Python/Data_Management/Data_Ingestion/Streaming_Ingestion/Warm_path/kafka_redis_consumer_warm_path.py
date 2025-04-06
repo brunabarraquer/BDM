@@ -5,6 +5,7 @@ import redis
 import redis.client
 
 
+# Function to create a Kafka Consumer for warm path
 def create_consumer():
     # Initialize Kafka Consumer
     consumer = KafkaConsumer(
@@ -17,6 +18,8 @@ def create_consumer():
 
     return consumer
 
+
+# Functio to create a temporal storage using Redis
 def create_redis():
     # Connect to Redis (Temporary Storage)
     redis_client = redis.Redis(host="localhost", port=6379, db=0)
@@ -27,6 +30,7 @@ def create_redis():
 def store_in_buffer(data, redis_client):
     redis_client.rpush("warm_path_buffer", json.dumps(data))
 
+
 # Retrieve & Clear Buffer
 def get_buffer_data():
 
@@ -36,7 +40,7 @@ def get_buffer_data():
     movie_clicks = {}
     for item in buffer_data:
         data = json.loads(item)
-        
+
         if data['movie_id'] in movie_clicks:
             movie_clicks[data['movie_id']] += data['clicks']
         else:
@@ -46,7 +50,7 @@ def get_buffer_data():
     return movie_clicks
 
 
-
+# Function that receive messages from Kafka Producer and store temporaly in buffer until has passed a minute
 def receive_messages_minutely():
     # Start Timer
     start_time = time.time()
@@ -60,10 +64,8 @@ def receive_messages_minutely():
         # Check if 1 hour passed
         if time.time() - start_time >= 60:
             batch_data = get_buffer_data()
-            print(f"Warm Path -> get movies rellevance in a minute: {batch_data}\n")
+            print(f"\033[38;5;214mWarm Path\033[0m -> get movies rellevance in a minute: {batch_data}\n")
             start_time = time.time()  # Reset Timer
 
     consumer.close()
     redis_client.close()
-    
-

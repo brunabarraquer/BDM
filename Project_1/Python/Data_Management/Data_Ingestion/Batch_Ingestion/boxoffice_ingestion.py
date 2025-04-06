@@ -3,6 +3,8 @@ import os
 from boxoffice_api import BoxOffice
 from datetime import datetime, timedelta
 
+
+# Function to get the data and store into Temporal folder with the prefix of API source
 def boxOffice_daily_ingestion(temporal_folder_path):
 
     box_office = BoxOffice(api_key="46f1c1bd")  # Initialize API
@@ -11,7 +13,7 @@ def boxOffice_daily_ingestion(temporal_folder_path):
     date = (datetime.today() - timedelta(days=2)).strftime('%Y-%m-%d')
 
     file_path = os.path.join(temporal_folder_path, "boxoffice_movie_data.json")
-    
+
     try:
         # Fetch daily box office data
         daily_data = box_office.get_daily(date)
@@ -28,5 +30,5 @@ def boxOffice_daily_ingestion(temporal_folder_path):
     except Exception as e:
         print(f"Failed to fetch box office data: {e}")
         return
-        
+
 # boxOffice_daily_ingestion(temporal_folder_path)

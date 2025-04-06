@@ -6,7 +6,7 @@
 
 This project sets up a Docker container with all the required services to run a user interface for managing data pipelines. The focus is on implementing a **Data Management** layer using a **Data Lakehouse** architecture (with **Delta Lake**).
 
-> ⚠️ **Note:** In this first part of the project, only the **Landing Zone** (raw storage) will be used. No data analysis will be performed yet.
+> ⚠️ **Note:** In this first part of the project, only the **Landing Zone** (raw storage) will be used. No data cleaning or data quality will be performed yet.
 
 ---
 
@@ -82,7 +82,7 @@ Simulates near real-time ingestion, fetching and printing data every minute (int
 Checks the quality of all Python code, including `UI.py` and other scripts.
 
 **Display:**  
-Opens a new terminal window to display results using a linter (e.g., `pylint`).
+Opens a new terminal window to display results.
 
 ---
 
@@ -100,7 +100,7 @@ Contains Apache Airflow DAGs to schedule and automate tasks.
 
 This folder contains Python scripts used in the Data Management processes.
 
-- **`Code_Quality/CheckCodeQuality.py`**  
+- **`Code_Quality/check_code_quality.py`**  
   - Script to check and report code quality of the Python files.
 
 - **`Data_Management/`**
@@ -114,8 +114,8 @@ This folder contains Python scripts used in the Data Management processes.
         - Create folder structure.
         - Move data from Temporal Zone to Persistent Zone using Delta Lake.
 
-- **`Monitoring/monitor_script.py`**  
-  - Monitors real-time execution of both Data Management and Analysis Backbones.
+- **`Monitoring/monitor.py`**  
+  - Monitors real-time execution of Data Management process.
 
 ---
 
@@ -146,6 +146,25 @@ source myenv/bin/activate  # On Unix/macOS
 pip install -r ./docker/requirements.txt
 ```
 
+### 3. Build and Start Docker Containers
+Navigate to the docker/ directory and run the following command to build the Docker image and start all services defined in the docker-compose.yml file:
+
+```bash
+docker-compose up --build
+```
+
+Once the containers are up, you can run the project scripts. To stop the Docker containers, use the following command:
+
+```bash
+docker-compose down
+```
+### 4. Deactivating the Virtual Environment
+After you're done working in the virtual environment, deactivate it by running the following command:
+
+```bash
+deactivate
+```
+
 ---
 
 ## 🚀 Running the Project
@@ -157,6 +176,7 @@ python ./Project_1/UI.py
 
 ### Run Unit Tests:
 Navigate to the appropriate test folder and run:
+
 ```bash
 python -m unittest test_file_name.py
 ```

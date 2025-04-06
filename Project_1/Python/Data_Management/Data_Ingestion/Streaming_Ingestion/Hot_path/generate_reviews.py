@@ -85,6 +85,7 @@ words = {
                'profoundly', 'woefully', 'terribly', 'horribly', 'painfully', 'unbearably', 'dismally']
 }
 
+
 # Function to get synonyms
 def get_synonyms(word, pos=None):
     synonyms = set()
@@ -94,6 +95,7 @@ def get_synonyms(word, pos=None):
             if synonym != word and len(synonym) > 3:  # Avoid very short words
                 synonyms.add(synonym)
     return list(synonyms)
+
 
 # Enrich the word banks with synonyms
 # expand_factor ensures how many synonyms we want to add for each word
@@ -125,8 +127,10 @@ def enrich_wordbank(word_dict, expand_factor=3):
         expanded_dict[category] = list(expanded)
     return expanded_dict
 
+
 # Expand the word banks
 enriched_words = enrich_wordbank(words)
+
 
 # Function to generate reviews using templates
 def generate_review(templates, word_dict, capitalize_first=True):
@@ -162,6 +166,7 @@ def generate_review(templates, word_dict, capitalize_first=True):
         
     return review
 
+
 # Generate a large bank of reviews
 def generate_review_bank(num_reviews=1000):
     reviews = []
@@ -178,4 +183,3 @@ def generate_review_bank(num_reviews=1000):
         reviews.append(review)
     
     return reviews
-

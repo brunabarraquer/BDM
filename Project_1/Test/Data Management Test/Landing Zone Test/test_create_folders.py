@@ -1,14 +1,11 @@
 import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../Python/Data_Management/Landing_Zone')))
-
-
 import unittest
 from pathlib import Path
 from unittest.mock import patch, call, MagicMock
+from create_folders import create_folders  # type: ignore
 
-# Import the function to test - adjust import path as needed
-from create_folders import create_folders #type: ignore
 
 class TestCreateFolders(unittest.TestCase):
 
@@ -60,7 +57,6 @@ class TestCreateFolders(unittest.TestCase):
         # Verify success message was still printed (function doesn't stop on error)
         mock_print.assert_called_with('All folders created successfully !!!')
 
-
     @patch("pathlib.Path.mkdir")
     @patch("builtins.print")
     def test_first_folder_fails_second_succeeds(self, mock_print, mock_mkdir):
@@ -108,7 +104,6 @@ class TestCreateFolders(unittest.TestCase):
         
         # Verify success message was still printed
         mock_print.assert_called_with('All folders created successfully !!!')
-
 
 if __name__ == "__main__":
     unittest.main()

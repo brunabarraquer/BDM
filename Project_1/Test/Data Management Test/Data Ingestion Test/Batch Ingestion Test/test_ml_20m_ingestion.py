@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import patch, MagicMock, mock_open, call
+from unittest.mock import patch,  call
 import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../../Python/Data_Management/Data_Ingestion/Batch_Ingestion')))
@@ -37,12 +37,10 @@ class TestML20MDatasetIngestion(unittest.TestCase):
             call("/fake/dataset_path\\ml-20m_movies.csv", "/fake/temporal_folder\\ml-20m_movies.csv")
         ], any_order=True)
 
-
     @patch('ml_20m_ingestion.kagglehub.dataset_download', side_effect=Exception("API error"))
     def test_kaggle_download_failure(self, mock_download):
         ml_20m_dataset_ingestion("/fake/temporal_folder")
         mock_download.assert_called_once()
-
 
     @patch('ml_20m_ingestion.kagglehub.dataset_download', return_value="/fake/dataset_path")
     @patch('ml_20m_ingestion.os.listdir', return_value=["ratings.csv"])
@@ -50,7 +48,6 @@ class TestML20MDatasetIngestion(unittest.TestCase):
     def test_rename_failure(self, mock_rename, mock_listdir, mock_download):
         ml_20m_dataset_ingestion("/fake/temporal_folder")
         mock_rename.assert_called_once()
-
 
     @patch('ml_20m_ingestion.kagglehub.dataset_download', return_value="/fake/dataset_path")
     @patch('ml_20m_ingestion.os.listdir', side_effect=[["ratings.csv"], ["ml-20m_ratings.csv"]])
@@ -61,6 +58,5 @@ class TestML20MDatasetIngestion(unittest.TestCase):
         ml_20m_dataset_ingestion("/fake/temporal/folder")
         mock_move.assert_called_once()
         
-
 if __name__ == "__main__":
     unittest.main()

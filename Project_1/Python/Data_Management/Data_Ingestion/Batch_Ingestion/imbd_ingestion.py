@@ -17,6 +17,7 @@ DATA_FILES = [
     'title.ratings.tsv.gz'
 ]
 
+
 # Function to download a file
 def download_file(url, dest_path):
     try:
@@ -31,18 +32,20 @@ def download_file(url, dest_path):
         print(f"Error downloading {url}: {e}")
         return
 
+
+# Function to unzip the files retrieved from API
 def unzip_file(file_path, dest_path):
     try:
         with gzip.open(file_path, 'rb') as f_in:
             with open(dest_path, 'wb') as f_out:
                 shutil.copyfileobj(f_in, f_out)
-        os.remove(file_path)
+        os.remove(file_path)  # Remove zip file
     except Exception as e:
         print(f'Error unzip: {e}')
         return
 
 
-
+# Function to ingest the data in the Temporal folder with the prefix of API source
 def imbd_ingestion(temporal_folder_path):
     # Download each dataset
     for file_name in DATA_FILES:

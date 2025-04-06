@@ -1,5 +1,7 @@
 from pathlib import Path
 
+
+# Create the folders for the Data Management stages
 def create_folders(project_path):
     # Define base folder paths
     data_management_folder = project_path / "Data Management"
@@ -15,7 +17,5 @@ def create_folders(project_path):
 
     print('All folders created successfully !!!')
 
-
 # project_folder = Path(__file__).resolve().parents[3]
-
 # create_folders(project_folder)

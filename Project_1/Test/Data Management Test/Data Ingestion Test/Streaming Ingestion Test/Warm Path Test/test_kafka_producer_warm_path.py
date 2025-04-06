@@ -3,7 +3,8 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../../../Python/Data_Management/Data_Ingestion/Streaming_Ingestion/Warm_path')))
 import unittest
 from unittest.mock import patch, MagicMock
-from kafka_producer_warm_path import create_producer, near_real_time_processing # type: ignore
+from kafka_producer_warm_path import create_producer, near_real_time_processing  # type: ignore
+
 
 class TestKafkaProducerWarmPath(unittest.TestCase):
 

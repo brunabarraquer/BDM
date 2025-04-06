@@ -10,9 +10,9 @@ from airflow import DAG # type: ignore
 from airflow.operators.python import PythonOperator # type: ignore
 from datetime import datetime
 from pathlib import Path
+
+# Get the folder paths that we need to use
 project_folder = Path(__file__).resolve().parents[1]
-
-
 temporal_folder_path = project_folder / 'Data Management' / 'Landing Zone' / 'Temporal Zone'
 persistent_folder_path = project_folder / 'Data Management' / 'Landing Zone' / 'Persistent Zone'
 
@@ -31,13 +31,14 @@ with DAG(
     catchup=False,
 ) as dag:
     
-    # Create tasks that call the Python function
+    # Create batch ingestion tasks
     batch_ingestion_tasks = PythonOperator(
         task_id='batch_ingestion_tasks',
         python_callable=batch_ingestion,
         op_args=[temporal_folder_path],
     )
     
+    # Create update delta tables task
     update_delta_tables_task = PythonOperator(
         task_id='update_delta_tables_task',
         python_callable=create_delta_tables,

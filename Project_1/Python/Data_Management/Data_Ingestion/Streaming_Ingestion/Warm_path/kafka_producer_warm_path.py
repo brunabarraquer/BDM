@@ -8,6 +8,7 @@ current_folder = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_folder)
 
 
+# Function to create a Kakfa Producer to simulate warm path
 def create_producer():
     producer = KafkaProducer(
         bootstrap_servers='localhost:9092',
@@ -15,6 +16,8 @@ def create_producer():
     )
     return producer
 
+
+# Function to simulate a near real time processing minutely (it's possible to change at hourly) 
 def near_real_time_processing():
     producer = create_producer()
     topic = 'movie-click-rate'
@@ -23,7 +26,7 @@ def near_real_time_processing():
     for _ in range(1000):
         click_rate = {
             'movie_id': np.random.choice(movie_ids),
-            'clicks': np.random.randint(1,5)
+            'clicks': np.random.randint(1,5),
         }
         producer.send(topic, click_rate)
         time.sleep(1)

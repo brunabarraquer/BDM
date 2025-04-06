@@ -3,7 +3,8 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../../../Python/Data_Management/Data_Ingestion/Streaming_Ingestion/Hot_path')))
 import unittest
 from unittest.mock import patch, MagicMock
-from kafka_consumer_hot_path import create_consumer, receive_messages # type: ignore
+from kafka_consumer_hot_path import create_consumer, receive_messages  # type: ignore
+
 
 class TestKafkaConsumerHotPath(unittest.TestCase):
 
@@ -41,4 +42,3 @@ class TestKafkaConsumerHotPath(unittest.TestCase):
 
         # Check consumer.close() was called
         mock_instance.close.assert_called_once()
-
