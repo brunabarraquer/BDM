@@ -27,7 +27,7 @@ def download_file(url, dest_path):
             for chunk in response.iter_content(chunk_size=8192):
                 file.write(chunk)
         print(f"Downloaded: {dest_path}")
-        # return dest_path
+        return True
     except requests.exceptions.RequestException as e:
         print(f"Error downloading {url}: {e}")
         return False
@@ -40,6 +40,7 @@ def unzip_file(file_path, dest_path):
             with open(dest_path, 'wb') as f_out:
                 shutil.copyfileobj(f_in, f_out)
         os.remove(file_path)  # Remove zip file
+        return True
     except Exception as e:
         print(f'Error unzip: {e}')
         return False

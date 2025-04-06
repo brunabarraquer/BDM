@@ -58,13 +58,14 @@ def transfer_data_to_delta_lake(spark, temporal_folder_path, persistent_folder_p
             except Exception as e:
                 print(f"Error reading {filename}: {e}")
                 return False
+    return True
 
 
 # Function to create the delta tables for the data files
 def create_delta_tables(temporal_folder_path, persistent_folder_path):
     try:
         spark = start_spark()
-        if not spark:
+        if spark == False:
             return False
         successful_transfer = transfer_data_to_delta_lake(spark, temporal_folder_path, persistent_folder_path)
         if not successful_transfer:

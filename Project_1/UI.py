@@ -54,7 +54,7 @@ def button1_action():
     if successfull:
         write_to_terminal("Successfully created Data Management folders !!!\n")
     else:
-        write_to_terminal(f"Creation of Data Management foldes failed.\n")
+        write_to_terminal(f"Creation of Data Management folders failed.\n")
         return
     
     write_to_terminal("Ingesting ml-20m dataset to Temporal folder ...\n")
