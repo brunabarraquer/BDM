@@ -59,4 +59,11 @@ def create_delta_tables(temporal_folder_path, persistent_folder_path):
     spark = start_spark()
     transfer_data_to_delta_lake(spark, temporal_folder_path, persistent_folder_path)
 
-# create_delta_tables()
+# from pathlib import Path
+# project_folder = Path(__file__).resolve().parents[3]
+
+# temporal_folder_path = project_folder / 'Data Management' / 'Landing Zone' / 'Temporal Zone'
+# persistent_folder_path = project_folder / 'Data Management' / 'Landing Zone' / 'Persistent Zone'
+
+
+# create_delta_tables(temporal_folder_path, persistent_folder_path)

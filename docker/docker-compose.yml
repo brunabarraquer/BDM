@@ -13,6 +13,8 @@ services:
     volumes:
       - ./data:/opt/spark/data
       - ./scripts:/opt/spark/scripts
+    networks:
+      - airflow-network
     command: tail -f /dev/null
     
   zookeeper:
@@ -22,6 +24,8 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
     ports: 
       - "2181:2181"
+    networks:
+      - airflow-network
 
   kafka:
     image: confluentinc/cp-kafka:latest
@@ -35,12 +39,16 @@ services:
         KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
         KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
         KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - airflow-network
 
   redis:
     image: redis:7
     container_name: redis
     ports:
       - "6379:6379"
+    networks:
+      - airflow-network
 
   postgres:
     image: postgres:13
@@ -51,21 +59,29 @@ services:
       POSTGRES_DB: airflow
     volumes:
       - postgres-db-volume:/var/lib/postgresql/data
+    networks:
+      - airflow-network
 
   airflow-webserver:
     build: .
     container_name: airflow-webserver
     depends_on:
       - postgres
+      - spark-delta
     environment:
       AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
       AIRFLOW__WEBSERVER__SECRET_KEY: my_secret_key
       AIRFLOW__WEBSERVER__RBAC: 'True'
-      AIRFLOW__CORE__DAGS_FOLDER: /opt/Project_1/dags  # Configure Airflow to look for DAGs in /opt/Project_1/dags
+      AIRFLOW__CORE__DAGS_FOLDER: /opt/Project_1/dags
+      AIRFLOW_CONN_SPARK_DEFAULT: 'spark://spark-delta:7077'
+      SPARK_HOME: /opt/airflow/spark
+      PYTHONPATH: ${PYTHONPATH}:/opt/airflow/spark/python:/opt/airflow/spark/python/lib/py4j-0.10.9.5-src.zip
+      JAVA_HOME: /usr/lib/jvm/default-java
     volumes:
-      - ../Project_1:/opt/Project_1  # Mount the entire Project_1 directory
+      - ../Project_1:/opt/Project_1
       - ./airflow-logs-volume:/opt/airflow/logs
+      # Remove the spark-symlink volume as we'll create the directory directly
     ports:
       - "8080:8080"
     command: >
@@ -74,6 +90,8 @@ services:
         airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com &&
         airflow webserver"
     restart: always
+    networks:
+      - airflow-network
 
   airflow-scheduler:
     build: .
@@ -81,16 +99,30 @@ services:
     depends_on:
       - airflow-webserver
       - postgres
+      - spark-delta
     environment:
       AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
-      AIRFLOW__WEBSERVER__SECRET_KEY: my_secret_key  # Add this
-      AIRFLOW__CORE__DAGS_FOLDER: /opt/Project_1/dags  # Configure Airflow to look for DAGs in /opt/Project_1/dags
+      AIRFLOW__WEBSERVER__SECRET_KEY: my_secret_key
+      AIRFLOW__CORE__DAGS_FOLDER: /opt/Project_1/dags
+      AIRFLOW_CONN_SPARK_DEFAULT: 'spark://spark-delta:7077'
+      SPARK_HOME: /opt/airflow/spark
+      PYTHONPATH: ${PYTHONPATH}:/opt/airflow/spark/python:/opt/airflow/spark/python/lib/py4j-0.10.9.5-src.zip
+      JAVA_HOME: /usr/lib/jvm/default-java
     volumes:
-      - ../Project_1:/opt/Project_1  # Mount the entire Project_1 directory
+      - ../Project_1:/opt/Project_1
       - ./airflow-logs-volume:/opt/airflow/logs
-    command: scheduler
+      # Remove the spark-symlink volume as we'll create the directory directly
+    command: >
+      bash -c "
+        airflow scheduler"
     restart: always
+    networks:
+      - airflow-network
 
 volumes:
   postgres-db-volume:
+
+networks:
+  airflow-network:
+    driver: bridge

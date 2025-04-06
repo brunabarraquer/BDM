@@ -5,8 +5,8 @@ from Python.Data_Management.Data_Ingestion.Batch_Ingestion.imbd_ingestion import
 from Python.Data_Management.Data_Ingestion.Batch_Ingestion.ml_20m_ingestion import ml_20m_dataset_ingestion
 from Python.Data_Management.Data_Ingestion.Batch_Ingestion.boxoffice_ingestion import boxOffice_daily_ingestion
 from Python.Data_Management.Landing_Zone.transfer_data_to_delta_lake import create_delta_tables
-from airflow import DAG
-from airflow.operators.python import PythonOperator
+from airflow import DAG # type: ignore
+from airflow.operators.python import PythonOperator # type: ignore
 from datetime import datetime
 from pathlib import Path
 project_folder = Path(__file__).resolve().parents[1]

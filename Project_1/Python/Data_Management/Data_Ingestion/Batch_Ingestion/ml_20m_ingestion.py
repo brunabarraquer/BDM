@@ -2,7 +2,6 @@ import os
 import kagglehub
 import shutil
 
-
 def ml_20m_dataset_ingestion(temporal_folder_path):
     try:
         # Download the dataset and store it in the current folder
@@ -37,6 +36,12 @@ def ml_20m_dataset_ingestion(temporal_folder_path):
             except Exception as e:
                 print(f'Error occurred when move the data to Temporal folder: {e}')
                 return
+            
+    try:
+        shutil.rmtree(dataset_path)
+        print(f"Deleted dataset folder: {dataset_path}")
+    except Exception as e:
+        print(f"Error removing dataset folder: {e}")
 
     print('All the data ingested in the Temporal Folder')
 

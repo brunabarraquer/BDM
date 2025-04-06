@@ -12,11 +12,12 @@ temporal_folder_path = project_folder / 'Data Management' / 'Landing Zone' / 'Te
 persistent_folder_path = project_folder / 'Data Management' / 'Landing Zone' / 'Persistent Zone'
 
 # Importing the functions from the Fist Part of the project
+from Python.Data_Management.Data_Ingestion.Streaming_Ingestion.Warm_path import kafka_redis_consumer_warm_path
 from Python.Data_Management.Landing_Zone import create_folders, transfer_data_to_delta_lake
 
 from Python.Data_Management.Data_Ingestion.Batch_Ingestion import imbd_ingestion, boxoffice_ingestion, ml_20m_ingestion
 from Python.Data_Management.Data_Ingestion.Streaming_Ingestion.Hot_path import kafka_consumer_hot_path, kafka_producer_hot_path
-from Python.Data_Management.Data_Ingestion.Streaming_Ingestion.Warm_path import kafka_consumer_warm_path, kafka_producer_warm_path
+from Python.Data_Management.Data_Ingestion.Streaming_Ingestion.Warm_path import kafka_producer_warm_path, kafka_redis_consumer_warm_path
 
 #Importing others functions
 from Python.Monitoring.monitor import start_monitoring_thread, stop_monitoring_thread
@@ -114,7 +115,7 @@ def button4_action():
     producer_thread = threading.Thread(target=kafka_producer_warm_path.near_real_time_processing, daemon=True)
     producer_thread.start()
     
-    consumer_thread = threading.Thread(target=kafka_consumer_warm_path.receive_messages_minutely, daemon=True)
+    consumer_thread = threading.Thread(target=kafka_redis_consumer_warm_path.receive_messages_minutely, daemon=True)
     consumer_thread.start()
 
 # Create the main window

@@ -5,7 +5,7 @@ import unittest
 from unittest.mock import patch, MagicMock
 from kafka_consumer_hot_path import create_consumer, receive_messages # type: ignore
 
-class TestKafkaConsumer(unittest.TestCase):
+class TestKafkaConsumerHotPath(unittest.TestCase):
 
     @patch('consumer.KafkaConsumer')
     def test_create_consumer(self, mock_kafka_consumer):

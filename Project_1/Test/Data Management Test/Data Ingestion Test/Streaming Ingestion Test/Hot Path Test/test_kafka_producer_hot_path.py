@@ -6,7 +6,7 @@ from unittest.mock import patch, MagicMock, call
 from  kafka_producer_hot_path import create_producer, start_streaming # type: ignore
 
 
-class TestKafkaProducer(unittest.TestCase):
+class TestKafkaProducerHotPath(unittest.TestCase):
 
     @patch('kafka_producer.KafkaProducer')
     def test_create_producer(self, mock_kafka_producer):
