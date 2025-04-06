@@ -81,7 +81,6 @@ services:
     volumes:
       - ../Project_1:/opt/Project_1
       - ./airflow-logs-volume:/opt/airflow/logs
-      # Remove the spark-symlink volume as we'll create the directory directly
     ports:
       - "8080:8080"
     command: >
@@ -112,7 +111,6 @@ services:
     volumes:
       - ../Project_1:/opt/Project_1
       - ./airflow-logs-volume:/opt/airflow/logs
-      # Remove the spark-symlink volume as we'll create the directory directly
     command: >
       bash -c "
         airflow scheduler"
