@@ -1,3 +1,4 @@
 .env
 /__pycache__
 delta_lake.ipynb
+data_quality.ipynb

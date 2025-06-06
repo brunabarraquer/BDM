@@ -6,6 +6,8 @@ from Python.Data_Management.Data_Ingestion.Batch_Ingestion.ml_20m_ingestion impo
 from Python.Data_Management.Data_Ingestion.Batch_Ingestion.boxoffice_ingestion import boxOffice_daily_ingestion
 from Python.Data_Management.Landing_Zone.transfer_data_to_delta_lake import create_delta_tables
 from Python.Data_Management.Landing_Zone.create_folders import create_folders
+from Python.Data_Management.Trusted_Zone.data_cleaning_pipeline import main_cleaning_pipeline
+from Python.Data_Management.Exploitation_Zone.exploitation_tables import exploitation_tables
 from airflow import DAG # type: ignore
 from airflow.operators.python import PythonOperator # type: ignore
 from datetime import datetime
@@ -22,6 +24,7 @@ def batch_ingestion(temporal_folder_path):
     ml_20m_dataset_ingestion(temporal_folder_path)
     boxOffice_daily_ingestion(temporal_folder_path)
     return
+
 
 # Create the DAG
 with DAG(
@@ -45,6 +48,19 @@ with DAG(
         op_args=[temporal_folder_path, persistent_folder_path],
     )
 
-    # Set the task dependencies
-    batch_ingestion_tasks >> update_delta_tables_task
+    # Create trusted zone tasks
+    trusted_delta_tables_task = PythonOperator(
+        task_id='trusted_delta_tables_task',
+        python_callable=main_cleaning_pipeline
+    )
+
+    # Create exploitation zone tasks
+    exploitation_delta_tables_task = PythonOperator(
+        task_id='exploitation_delta_tables_task',
+        python_callable=exploitation_tables
+    )
+
+
+    # Set the task dependencies 
+    batch_ingestion_tasks >> update_delta_tables_task >> trusted_delta_tables_task >> exploitation_delta_tables_task
     

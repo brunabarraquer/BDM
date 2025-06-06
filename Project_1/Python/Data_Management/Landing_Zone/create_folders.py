@@ -8,8 +8,10 @@ def create_folders(project_path):
     landing_zone_folder = data_management_folder / "Landing Zone"
     temporal_folder = landing_zone_folder / "Temporal Zone"
     persistent_folder = landing_zone_folder / "Persistent Zone"
+    trusted_folder = data_management_folder / "Trusted Zone"
+    exploitation_folder = data_management_folder / "Exploitation Zone"
 
-    for folder in [temporal_folder, persistent_folder]:
+    for folder in [temporal_folder, persistent_folder, trusted_folder, exploitation_folder]:
         try:
             folder.mkdir(parents=True, exist_ok=True)
         except Exception as e:
