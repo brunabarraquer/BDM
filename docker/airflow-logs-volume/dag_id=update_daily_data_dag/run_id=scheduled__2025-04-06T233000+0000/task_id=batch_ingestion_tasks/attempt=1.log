@@ -1,0 +1,32 @@
+[2025-06-07T13:19:04.010+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: update_daily_data_dag.batch_ingestion_tasks scheduled__2025-04-06T23:30:00+00:00 [queued]>
+[2025-06-07T13:19:04.021+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: update_daily_data_dag.batch_ingestion_tasks scheduled__2025-04-06T23:30:00+00:00 [queued]>
+[2025-06-07T13:19:04.022+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 1
+[2025-06-07T13:19:04.035+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): batch_ingestion_tasks> on 2025-04-06 23:30:00+00:00
+[2025-06-07T13:19:04.039+0000] {standard_task_runner.py:60} INFO - Started process 175 to run task
+[2025-06-07T13:19:04.042+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'update_daily_data_dag', 'batch_ingestion_tasks', 'scheduled__2025-04-06T23:30:00+00:00', '--job-id', '22', '--raw', '--subdir', 'DAGS_FOLDER/scheduled_task.py', '--cfg-path', '/tmp/tmpu7lfyh8w']
+[2025-06-07T13:19:04.045+0000] {standard_task_runner.py:88} INFO - Job 22: Subtask batch_ingestion_tasks
+[2025-06-07T13:19:04.062+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/***/settings.py:194 DeprecationWarning: The sql_alchemy_conn option in [core] has been moved to the sql_alchemy_conn option in [database] - the old setting has been used, but please update your config.
+[2025-06-07T13:19:04.101+0000] {task_command.py:423} INFO - Running <TaskInstance: update_daily_data_dag.batch_ingestion_tasks scheduled__2025-04-06T23:30:00+00:00 [running]> on host 9eafd80829be
+[2025-06-07T13:19:04.196+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='update_daily_data_dag' AIRFLOW_CTX_TASK_ID='batch_ingestion_tasks' AIRFLOW_CTX_EXECUTION_DATE='2025-04-06T23:30:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-04-06T23:30:00+00:00'
+[2025-06-07T13:19:04.207+0000] {logging_mixin.py:188} INFO - All folders created successfully !!!
+[2025-06-07T13:19:38.675+0000] {logging_mixin.py:188} INFO - Downloaded: /opt/Project_1/Data Management/Landing Zone/Temporal Zone/name.basics.tsv.gz
+[2025-06-07T13:21:17.726+0000] {logging_mixin.py:188} INFO - Downloaded: /opt/Project_1/Data Management/Landing Zone/Temporal Zone/title.akas.tsv.gz
+[2025-06-07T13:24:57.366+0000] {logging_mixin.py:188} INFO - Downloaded: /opt/Project_1/Data Management/Landing Zone/Temporal Zone/title.basics.tsv.gz
+[2025-06-07T13:34:32.107+0000] {logging_mixin.py:188} INFO - Downloaded: /opt/Project_1/Data Management/Landing Zone/Temporal Zone/title.crew.tsv.gz
+[2025-06-07T13:35:24.768+0000] {logging_mixin.py:188} INFO - Downloaded: /opt/Project_1/Data Management/Landing Zone/Temporal Zone/title.episode.tsv.gz
+[2025-06-07T13:37:21.095+0000] {logging_mixin.py:188} INFO - Downloaded: /opt/Project_1/Data Management/Landing Zone/Temporal Zone/title.principals.tsv.gz
+[2025-06-07T13:38:57.478+0000] {logging_mixin.py:188} INFO - Downloaded: /opt/Project_1/Data Management/Landing Zone/Temporal Zone/title.ratings.tsv.gz
+[2025-06-07T13:38:58.315+0000] {logging_mixin.py:188} INFO - All data ingested in the Temporal Folder
+[2025-06-07T13:39:01.596+0000] {logging_mixin.py:188} INFO - Moved: ml-20m_ml-20m_tag.csv -> /opt/Project_1/Data Management/Landing Zone/Temporal Zone
+[2025-06-07T13:39:01.626+0000] {logging_mixin.py:188} INFO - Moved: ml-20m_ml-20m_genome_tags.csv -> /opt/Project_1/Data Management/Landing Zone/Temporal Zone
+[2025-06-07T13:39:01.675+0000] {logging_mixin.py:188} INFO - Moved: ml-20m_ml-20m_link.csv -> /opt/Project_1/Data Management/Landing Zone/Temporal Zone
+[2025-06-07T13:39:39.103+0000] {logging_mixin.py:188} INFO - Moved: ml-20m_ml-20m_rating.csv -> /opt/Project_1/Data Management/Landing Zone/Temporal Zone
+[2025-06-07T13:39:39.142+0000] {logging_mixin.py:188} INFO - Moved: ml-20m_ml-20m_movie.csv -> /opt/Project_1/Data Management/Landing Zone/Temporal Zone
+[2025-06-07T13:39:41.977+0000] {logging_mixin.py:188} INFO - Moved: ml-20m_ml-20m_genome_scores.csv -> /opt/Project_1/Data Management/Landing Zone/Temporal Zone
+[2025-06-07T13:39:41.980+0000] {logging_mixin.py:188} INFO - Deleted dataset folder: /home/***/.cache/kagglehub/datasets/grouplens/movielens-20m-dataset/versions/1
+[2025-06-07T13:39:41.984+0000] {logging_mixin.py:188} INFO - All the data ingested in the Temporal Folder
+[2025-06-07T13:39:49.660+0000] {logging_mixin.py:188} INFO - All data ingested in the Temporal Folder
+[2025-06-07T13:39:50.395+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-06-07T13:40:17.718+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=update_daily_data_dag, task_id=batch_ingestion_tasks, execution_date=20250406T233000, start_date=20250607T131904, end_date=20250607T134017
+[2025-06-07T13:40:18.658+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-07T13:40:19.025+0000] {taskinstance.py:3280} INFO - 1 downstream tasks scheduled from follow-on schedule check

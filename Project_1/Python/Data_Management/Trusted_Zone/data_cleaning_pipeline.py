@@ -10,25 +10,6 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from utils import *
 
-# Spark Session Configuration
-# def get_spark_session(app_name="LocalDeltaTable"):
-#     builder = pyspark.sql.SparkSession.builder.appName(app_name) \
-#         .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") \
-#         .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog") \
-#         .config("spark.driver.memory", "8g") \
-#         .config("spark.executor.memory", "6g") \
-#         .config("spark.memory.offHeap.enabled", "true") \
-#         .config("spark.memory.offHeap.size", "2g") \
-#         .config("spark.sql.shuffle.partitions", "10") \
-#         .config("spark.network.timeout", "800s") \
-#         .config("spark.executor.heartbeatInterval", "400s") \
-#         .config("spark.driver.maxResultSize", "4g") \
-#         .config("spark.kryoserializer.buffer.max", "1g") \
-#         .config("spark.sql.broadcastTimeout", "600") \
-#         .config("spark.rpc.message.maxSize", "512")
-#     return configure_spark_with_delta_pip(builder).getOrCreate()
-
-
 # Utility Functions
 
 def replace_nulls(df, null_values=None):
@@ -105,14 +86,6 @@ def replace_column_values(df, columns, old_value, new_value):
         when(col(c) == old_value, new_value).otherwise(col(c)).alias(c)
         for c in df.columns
     ])
-
-# Update load_delta_tables to accept `spark` explicitly:
-# def load_delta_tables(delta_table_path, spark):
-#     tables = {}
-#     for file in os.listdir(delta_table_path):
-#         df = spark.read.format('delta').load(os.path.join(delta_table_path, file))
-#         tables[file] = df
-#     return tables
 
 # Cleaning Functions for Specific Datasets
 def clean_ml_20m_tables(ml_tables):
@@ -233,44 +206,48 @@ def main_cleaning_pipeline(
     imbd_delta_path='../../../Data Management/Landing Zone/Persistent Zone/imbd/',
     trusted_zone_base='../../../Data Management/Trusted Zone/'
 ):
-    spark = get_spark_session()
-    trusted_zone_base = Path(trusted_zone_base)
-    trusted_zone_base.mkdir(parents=True, exist_ok=True)
+    try:
+        spark = get_spark_session()
+        trusted_zone_base = Path(trusted_zone_base)
+        trusted_zone_base.mkdir(parents=True, exist_ok=True)
 
-    # --- MovieLens 20M ---
-    ml_tables = load_delta_tables(ml_delta_path, spark)
-    ml_tables = clean_ml_20m_tables(ml_tables)
-    ml_trusted_path = Path(trusted_zone_base) / 'ml-20m'
-    ml_trusted_path.mkdir(parents=True, exist_ok=True)
-    ml_tables['ml-20m_genome_scores'].write.format('delta').mode('overwrite').save(str(ml_trusted_path / 'ml-20m_genome_scores'))
-    ml_tables['ml-20m_genome_tags'].write.format('delta').mode('overwrite').save(str(ml_trusted_path / 'ml-20m_genome_tags'))
-    ml_tables['ml-20m_link'].write.format('delta').mode('overwrite').save(str(ml_trusted_path / 'ml-20m_link'))
-    ml_tables['ml-20m_movie'].write.format('delta').mode('overwrite').save(str(ml_trusted_path / 'ml-20m_movie'))
-    ml_tables['ml-20m_rating'].write.format('delta').mode('overwrite').save(str(ml_trusted_path / 'ml-20m_rating'))
-    ml_tables['ml-20m_tag'].write.format('delta').mode('overwrite').save(str(ml_trusted_path / 'ml-20m_tag'))
+        # --- MovieLens 20M ---
+        ml_tables = load_delta_tables(ml_delta_path, spark)
+        ml_tables = clean_ml_20m_tables(ml_tables)
+        ml_trusted_path = Path(trusted_zone_base) / 'ml-20m'
+        ml_trusted_path.mkdir(parents=True, exist_ok=True)
+        ml_tables['ml-20m_genome_scores'].write.format('delta').mode('overwrite').save(str(ml_trusted_path / 'ml-20m_genome_scores'))
+        ml_tables['ml-20m_genome_tags'].write.format('delta').mode('overwrite').save(str(ml_trusted_path / 'ml-20m_genome_tags'))
+        ml_tables['ml-20m_link'].write.format('delta').mode('overwrite').save(str(ml_trusted_path / 'ml-20m_link'))
+        ml_tables['ml-20m_movie'].write.format('delta').mode('overwrite').save(str(ml_trusted_path / 'ml-20m_movie'))
+        ml_tables['ml-20m_rating'].write.format('delta').mode('overwrite').save(str(ml_trusted_path / 'ml-20m_rating'))
+        ml_tables['ml-20m_tag'].write.format('delta').mode('overwrite').save(str(ml_trusted_path / 'ml-20m_tag'))
 
-    # --- BoxOffice ---
-    boxoffice_tables = load_delta_tables(boxoffice_delta_path, spark)
-    boxoffice_df = clean_boxoffice_table(boxoffice_tables['boxoffice_movie_data'])
-    boxoffice_trusted_path = Path(trusted_zone_base) / 'boxoffice'
-    boxoffice_trusted_path.mkdir(parents=True, exist_ok=True)
-    boxoffice_df.write.format('delta').mode('overwrite').save(str(boxoffice_trusted_path / 'boxoffice_movie_data'))
+        # --- BoxOffice ---
+        boxoffice_tables = load_delta_tables(boxoffice_delta_path, spark)
+        boxoffice_df = clean_boxoffice_table(boxoffice_tables['boxoffice_movie_data'])
+        boxoffice_trusted_path = Path(trusted_zone_base) / 'boxoffice'
+        boxoffice_trusted_path.mkdir(parents=True, exist_ok=True)
+        boxoffice_df.write.format('delta').mode('overwrite').save(str(boxoffice_trusted_path / 'boxoffice_movie_data'))
 
-    # --- IMBD ---
-    imbd_tables = load_delta_tables(imbd_delta_path, spark)
-    imbd_tables = clean_imbd_tables(imbd_tables)
-    imbd_trusted_path = Path(trusted_zone_base) / 'imbd'
-    imbd_trusted_path.mkdir(parents=True, exist_ok=True)
-    imbd_tables['imbd_name.basics'].write.format('delta').mode('overwrite').save(str(imbd_trusted_path / 'imbd_name_basics'))
-    imbd_tables['imbd_title.akas'].write.format('delta').mode('overwrite').save(str(imbd_trusted_path / 'imbd_title_akas'))
-    imbd_tables['imbd_title.basics'].write.format('delta').mode('overwrite').save(str(imbd_trusted_path / 'imbd_title_basics'))
-    imbd_tables['imbd_title.crew'].write.format('delta').mode('overwrite').save(str(imbd_trusted_path / 'imbd_title_crew'))
-    imbd_tables['imbd_title.episode'].write.format('delta').mode('overwrite').save(str(imbd_trusted_path / 'imbd_title_episode'))
-    imbd_tables['imbd_title.principals'].write.format('delta').mode('overwrite').save(str(imbd_trusted_path / 'imbd_title_principals'))
-    imbd_tables['imbd_title.ratings'].write.format('delta').mode('overwrite').save(str(imbd_trusted_path / 'imbd_title_ratings'))
+        # --- IMBD ---
+        imbd_tables = load_delta_tables(imbd_delta_path, spark)
+        imbd_tables = clean_imbd_tables(imbd_tables)
+        imbd_trusted_path = Path(trusted_zone_base) / 'imbd'
+        imbd_trusted_path.mkdir(parents=True, exist_ok=True)
+        imbd_tables['imbd_name.basics'].write.format('delta').mode('overwrite').save(str(imbd_trusted_path / 'imbd_name_basics'))
+        imbd_tables['imbd_title.akas'].write.format('delta').mode('overwrite').save(str(imbd_trusted_path / 'imbd_title_akas'))
+        imbd_tables['imbd_title.basics'].write.format('delta').mode('overwrite').save(str(imbd_trusted_path / 'imbd_title_basics'))
+        imbd_tables['imbd_title.crew'].write.format('delta').mode('overwrite').save(str(imbd_trusted_path / 'imbd_title_crew'))
+        imbd_tables['imbd_title.episode'].write.format('delta').mode('overwrite').save(str(imbd_trusted_path / 'imbd_title_episode'))
+        imbd_tables['imbd_title.principals'].write.format('delta').mode('overwrite').save(str(imbd_trusted_path / 'imbd_title_principals'))
+        imbd_tables['imbd_title.ratings'].write.format('delta').mode('overwrite').save(str(imbd_trusted_path / 'imbd_title_ratings'))
 
-    spark.stop()
+        spark.stop()
+    except Exception as e:
+        return False
+    return True
 
 
 
-main_cleaning_pipeline()
+# main_cleaning_pipeline()

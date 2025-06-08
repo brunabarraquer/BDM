@@ -4,11 +4,10 @@
 
 ## Overview
 
-This project sets up a Docker container with all the required services to run a user interface for managing data pipelines. The focus is on implementing a **Data Management** layer using a **Data Lakehouse** architecture (with **Delta Lake**).
+This project sets up a Dockerized environment to run a user interface for managing end-to-end data pipelines, from data ingestion and preparation to the consumption layer for product visualization.
 
-> ⚠️ **Note:** In this first part of the project, only the **Landing Zone** (raw storage) will be used. No data cleaning or data quality will be performed yet.
+The focus is on implementing a robust **Data Management** layer using a **Data Lakehouse** architecture (with **Delta Lake**), and building a frotend with **Streamlit**.
 
----
 
 ## 📁 Project Structure
 
@@ -32,15 +31,17 @@ A graphical interface (script-based) with four main functions accessible via but
 
 ---
 
-### 🟩 **Start Batch Ingestion (Cold Path)**  
+### 🟩 **Start Batch Ingestion, Data Enrichment & Data Preparation**  
 **Status:** Enabled by default  
 
 **Functionality:**  
-Runs a batch ingestion pipeline that:
+Runs a end-to-end pipeline that:
 - Creates necessary folders for the Data Management process.
 - Extracts data from various APIs.
 - Saves data in the **Temporal Zone** (`Data Management/Landing Zone/Temporal Zone`).
 - Organizes data in the **Persistent Zone** (`Data Management/Landing Zone/Persistent Zone`) using **Delta Lake**.
+- Cleans data and stored in the **Trusted Zone**.
+- Generates KPIs and distributes data into the **Exploitation Zone**.
 
 **Display:**
 - **Left terminal:** Shows the progress of the data pipeline.
@@ -92,7 +93,7 @@ Contains Apache Airflow DAGs to schedule and automate tasks.
 
 - **`scheduled_task.py`**:  
   - Scheduled to run daily (assuming Airflow is continuously running).
-  - Extracts data from APIs and ingests into the **Landing Zone**.
+  - Cleans and moves data through all zones.
 
 ---
 
@@ -113,9 +114,34 @@ This folder contains Python scripts used in the Data Management processes.
       - Scripts to:
         - Create folder structure.
         - Move data from Temporal Zone to Persistent Zone using Delta Lake.
+    - **`Trusted_Zone/`**
+      - Script to:
+        - Cleans adn validates data (e.g., ranges, null checks).
+        - Integrates **Great Expectations** for data quality enforcement.
+        - Move data from Persistent Zone to Trusted Zone.
+    - **`Exploitation_Zone/`**
+      - Scripts to:
+        - Computes KPIs and aggregates.
+        - Distributes final datasets and consumption.
+        - Move data from Trusted Zone to Exploitation Zone.
+    - **`utils.py`**
+      - Contains helper functions used across the pipeline.
 
 - **`Monitoring/monitor.py`**  
   - Monitors real-time execution of Data Management process.
+
+---
+
+#### **`Streamlit/`**
+This folder contains scripts used for the **Consumption Layer** to visualize the proposed products.
+
+- **`products/`**:
+  - Core of the Consumption Layer, where contains all the business domains to perform the tasks.
+    - **`utility_code/`**
+      - scripts to compute user-based and item-based recommeder systems.
+    - Contains business domain visualizations as separate Streamlit products.
+  - **`app.py`**:
+    - Main Streamlit entry point that allows users to select and launch specific product visualizations.
 
 ---
 
@@ -173,6 +199,13 @@ deactivate
 ```bash
 python ./Project_1/UI.py
 ```
+
+### Run the Streamlit App (Consumption Layer)
+```bash
+cd ./Project_1/Streamlit
+streamlit run app.py
+```
+>Note: Make sure the Data Management process has been executed first.
 
 ### Run Unit Tests:
 Navigate to the appropriate test folder and run:

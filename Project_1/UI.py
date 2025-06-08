@@ -4,16 +4,21 @@ import tkinter.messagebox as messagebox
 import os
 from pathlib import Path
 import threading
-
+import sys
 
 project_folder = Path(__file__).resolve().parents[0]
 
+
 temporal_folder_path = project_folder / 'Data Management' / 'Landing Zone' / 'Temporal Zone'
 persistent_folder_path = project_folder / 'Data Management' / 'Landing Zone' / 'Persistent Zone'
+trusted_folder_path = project_folder / 'Data Management' / 'Trusted Zone'
+exploitation_folder_path = project_folder / 'Data Management' / 'Exploitation Zone'
 
 # Importing the functions from the Fist Part of the project
 from Python.Data_Management.Data_Ingestion.Streaming_Ingestion.Warm_path import kafka_redis_consumer_warm_path
 from Python.Data_Management.Landing_Zone import create_folders, transfer_data_to_delta_lake
+from Python.Data_Management.Trusted_Zone import data_cleaning_pipeline
+from Python.Data_Management.Exploitation_Zone import exploitation_tables
 
 from Python.Data_Management.Data_Ingestion.Batch_Ingestion import imbd_ingestion, boxoffice_ingestion, ml_20m_ingestion
 from Python.Data_Management.Data_Ingestion.Streaming_Ingestion.Hot_path import kafka_consumer_hot_path, kafka_producer_hot_path
@@ -85,10 +90,39 @@ def button1_action():
     write_to_terminal("Transferring data to Persistent folder creating Delta Tables ...\n")
     successfull = transfer_data_to_delta_lake.create_delta_tables(temporal_folder_path, persistent_folder_path)
     if successfull:
-        write_to_terminal("Successfully transferred data to Persistent folder and created Delta Table !!!\n")
+        write_to_terminal("Successfully transferred data to Persistent folder and created Delta Tables !!!\n")
     else:
         write_to_terminal(f"Failed to transfer data to Persistent folder and create Delta Table.\n")
         return
+    
+    write_to_terminal("Transferring data to Trusted Zone folder cleaning the data and creating Delta Tables ...\n")
+    successfull = data_cleaning_pipeline.main_cleaning_pipeline(
+        './Data Management/Landing Zone/Persistent Zone/ml-20m/',
+        './Data Management/Landing Zone/Persistent Zone/boxoffice/',
+        './Data Management/Landing Zone/Persistent Zone/imbd/',
+        './Data Management/Trusted Zone/')
+    if successfull:
+        write_to_terminal("Successfully transferred data to Trusted folder with cleaned the data and created Delta Tables !!!\n")
+    else:
+        write_to_terminal("Failed to transfer data to Trusted folder. \n")
+        return
+
+    write_to_terminal("Transferring data to Exploitation folder and creating KPIs... \n")
+    successfull = exploitation_tables.exploitation_tables(
+        boxoffice_delta_path='./Data Management/Trusted Zone/boxoffice/',
+        ml_movie_delta_path='./Data Management/Trusted Zone/ml-20m/',
+        imbd_path='./Data Management/Trusted Zone/imbd/',
+        exploitation_zone_path='./Data Management/Exploitation Zone/'
+    )
+    if successfull:
+        write_to_terminal("Successfully transferred data to Exploitation folder and created KPIs !!!\n")
+    else:
+        write_to_terminal("Failed to transfer data to Exploitation folder")
+        return
+    
+    write_to_terminal("Finish the Data Ingestion, Data Enrichment & Preparation pipeline !!!.")
+
+    
     
 
 def doCheckCodeQuality(secondary_terminal):
@@ -156,8 +190,8 @@ start = False
 monitor_thread = None 
 monitor_active = False  
 
-button1 = tk.Button(root, text="Start Batch Ingestion", command=button1_action, width=10, height=2, font=("Helvetica", 12))
-button1.place(relx=0.01, rely=0.02, relwidth=0.16, relheight=0.1)
+button1 = tk.Button(root, text="Start Batch Ingestion,\n Data Enrichment & Preparation", command=button1_action, width=20, height=2, font=("Helvetica", 12))
+button1.place(relx=0.01, rely=0.02, relwidth=0.20, relheight=0.1)
 
 button2 = tk.Button(root, text="Check Code Quality", command=button2_action, width=10, height=2, font=("Helvetica", 12))
 button2.place(relx=0.63, rely=0.02, relwidth=0.35, relheight=0.1)
@@ -176,7 +210,7 @@ terminal_text.place(relx=0.01, rely=0.15, relwidth=0.60, relheight=0.83)
 
 terminal_text2 = tk.Text(root, bg="black", fg="white", font=("Courier", 10), wrap="word")
 terminal_text2.place(relx=0.63, rely=0.15, relwidth=0.35, relheight=0.83)  
-write_to_terminal("Click the 'Start Batch Ingestion' button to start the ingestion from various datasources :)\n")
+write_to_terminal("Click the 'Start Batch Ingestion, Data Enrichment & Preparation' button to start the ingestion from various datasources :)\n")
 
 # Make terminal read-only initially
 terminal_text.config(state=tk.DISABLED)
