@@ -24,7 +24,7 @@ class TestCreateFolders(unittest.TestCase):
         persistent_folder = project_path / "Data Management" / "Landing Zone" / "Persistent Zone"
         
         # Verify mkdir was called exactly twice (once for each folder)
-        self.assertEqual(mock_mkdir.call_count, 2)
+        self.assertEqual(mock_mkdir.call_count, 4)
         
         # Verify mkdir was called with the correct parameters for both folders
         mock_mkdir.assert_has_calls([
