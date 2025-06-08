@@ -245,6 +245,7 @@ def main_cleaning_pipeline(
 
         spark.stop()
     except Exception as e:
+        print(f'Error: {e}')
         return False
     return True
 

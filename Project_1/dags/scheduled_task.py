@@ -52,20 +52,20 @@ with DAG(
     trusted_delta_tables_task = PythonOperator(
         task_id='trusted_delta_tables_task',
         python_callable=main_cleaning_pipeline,
-        op_args=['../Data Management/Landing Zone/Persistent Zone/ml-20m/'
-                '../Data Management/Landing Zone/Persistent Zone/boxoffice/',
-                '../Data Management/Landing Zone/Persistent Zone/imbd/',
-                '../Data Management/Trusted Zone/']
+        op_args=['../Project_1/Data Management/Landing Zone/Persistent Zone/ml-20m/',
+                '../Project_1/Data Management/Landing Zone/Persistent Zone/boxoffice/',
+                '../Project_1/Data Management/Landing Zone/Persistent Zone/imbd/',
+                '../Project_1/Data Management/Trusted Zone/']
     )
 
     # Create exploitation zone tasks
     exploitation_delta_tables_task = PythonOperator(
         task_id='exploitation_delta_tables_task',
         python_callable=exploitation_tables,
-        op_args=['../Data Management/Trusted Zone/boxoffice/',
-                '../Data Management/Trusted Zone/ml-20m/', 
-                '../Data Management/Trusted Zone/imbd/',
-                '../Data Management/Exploitation Zone/']
+        op_args=['../Project_1/Data Management/Trusted Zone/boxoffice/',
+                '../Project_1/Data Management/Trusted Zone/ml-20m/', 
+                '../Project_1/Data Management/Trusted Zone/imbd/',
+                '../Project_1/Data Management/Exploitation Zone/']
     )
 
 
