@@ -23,7 +23,7 @@ This folder contains the necessary configuration files to build and run Docker s
 
 ### 2. `Project_1/`
 
-This folder contains the core functionality for Part 1 of the project.
+This folder contains the core functionality of the project.
 
 #### **`UI.py`**
 
