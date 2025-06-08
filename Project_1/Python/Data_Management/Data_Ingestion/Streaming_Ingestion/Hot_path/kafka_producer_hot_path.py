@@ -22,8 +22,8 @@ def create_producer():
 def real_time_processing():    
     producer = create_producer()
     # Generate 1000 reviews randomly
-    all_reviews = generate_review_bank(100)
-    movies_id = ['movie1', 'movie2', 'movie3']
+    all_reviews = generate_review_bank(1000)
+    movies_id = ['movie ' + str(i) for i in range(100)]
     topic = 'user-reviews-topic'
 
     for _ in all_reviews:
